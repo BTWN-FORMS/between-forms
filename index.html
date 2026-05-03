@@ -31,28 +31,30 @@ body {
      - Saturated rose/purple source far right (Soft Matter)
      All bleeding freely, no walls between them             */
   background:
-    /* beacon — warm saturated gold at viewport center */
-    radial-gradient(ellipse 55% 45% at 50% 48vh,
-      rgba(165,115,35,.22) 0%,
-      rgba(120,75,18,.1)  35%,
-      transparent 70%
+    /* beacon — taller circle, slightly softer so worlds pop more */
+    radial-gradient(ellipse 50% 58% at 50% 48vh,
+      rgba(200,148,40,.20) 0%,
+      rgba(160,108,18,.09) 35%,
+      rgba(120,75,10,.03) 58%,
+      transparent 72%
     ),
-    /* amora source — amber from far left, full page height */
-    radial-gradient(ellipse 60% 80% at -5% 42%,
-      rgba(175,85,15,.32) 0%,
-      rgba(130,58,10,.18) 30%,
-      rgba(90,38,5,.06)  60%,
-      transparent 80%
+    /* amora — matched to soft matter intensity */
+    radial-gradient(ellipse 72% 85% at -8% 44%,
+      rgba(210,85,22,.42) 0%,
+      rgba(168,55,14,.25) 25%,
+      rgba(130,38,8,.11) 50%,
+      rgba(95,24,4,.04) 68%,
+      transparent 85%
     ),
-    /* soft matter source — rose/purple from far right */
-    radial-gradient(ellipse 60% 80% at 105% 42%,
-      rgba(150,18,80,.28) 0%,
-      rgba(100,14,90,.16) 30%,
-      rgba(65,10,75,.05)  60%,
-      transparent 80%
+    /* soft matter — equal intensity */
+    radial-gradient(ellipse 72% 85% at 108% 44%,
+      rgba(165,18,85,.42) 0%,
+      rgba(120,14,100,.25) 25%,
+      rgba(85,10,85,.11) 50%,
+      rgba(55,6,65,.04) 68%,
+      transparent 85%
     ),
-    /* base — very dark, near black, warm undertone */
-    #080604;
+    #070504;
   background-attachment: fixed;
 }
 
@@ -68,7 +70,7 @@ body::after {
   position:fixed; width:7px; height:7px;
   background:rgba(242,224,178,1); border-radius:50%;
   pointer-events:none; z-index:9999; transform:translate(-50%,-50%);
-  box-shadow: 0 0 6px rgba(242,224,178,.95), 0 0 16px rgba(225,188,108,.38), 0 0 34px rgba(205,168,100,.18);
+  box-shadow: 0 0 6px rgba(242,224,178,.98), 0 0 18px rgba(225,188,108,.42), 0 0 36px rgba(205,168,100,.2);
 }
 #curLight { position:fixed; inset:0; pointer-events:none; z-index:8990; mix-blend-mode:screen; }
 .curR {
@@ -108,9 +110,9 @@ body::after {
 }
 .hero.lean-left .wL::before {
   background:
-    radial-gradient(ellipse at 40% 50%, rgba(210,138,55,.38) 0%, transparent 55%),
-    radial-gradient(ellipse at 70% 20%, rgba(160,70,28,.22) 0%, transparent 46%),
-    radial-gradient(ellipse at 50% 85%, rgba(237,213,168,.12) 0%, transparent 34%);
+    radial-gradient(ellipse at 40% 50%, rgba(205,78,22,.5) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 20%, rgba(170,48,14,.3) 0%, transparent 46%),
+    radial-gradient(ellipse at 50% 85%, rgba(220,140,60,.16) 0%, transparent 34%);
   opacity:1;
 }
 .wR::before {
@@ -119,9 +121,9 @@ body::after {
 }
 .hero.lean-right .wR::before {
   background:
-    radial-gradient(ellipse at 55% 28%, rgba(210,35,75,.48) 0%, transparent 42%),
-    radial-gradient(ellipse at 16% 64%, rgba(70,28,150,.44) 0%, transparent 46%),
-    radial-gradient(ellipse at 78% 76%, rgba(224,48,96,.28) 0%, transparent 32%);
+    radial-gradient(ellipse at 55% 28%, rgba(210,28,80,.58) 0%, transparent 42%),
+    radial-gradient(ellipse at 16% 64%, rgba(80,22,165,.52) 0%, transparent 46%),
+    radial-gradient(ellipse at 78% 76%, rgba(224,48,96,.34) 0%, transparent 32%);
   opacity:1;
 }
 
@@ -324,10 +326,22 @@ body::after {
 
 .tc { position:relative; padding:32px; border:1px solid rgba(234,224,204,.055); display:flex; flex-direction:column; gap:12px; overflow:hidden; cursor:not-allowed; transition:border-color .35s; }
 .tc::before { content:''; position:absolute; inset:0; opacity:0; transition:opacity .4s; }
-.tc.am::before { background:radial-gradient(ellipse at 90% 50%, rgba(180,90,20,.06) 0%, transparent 60%); }
-.tc.sm::before { background:radial-gradient(ellipse at 10% 50%, rgba(120,18,70,.07) 0%, transparent 60%); }
+.tc.am::before { background:radial-gradient(ellipse at 85% 50%, rgba(210,85,22,.0) 0%, transparent 60%); }
+.tc.sm::before { background:radial-gradient(ellipse at 15% 50%, rgba(165,18,85,.0) 0%, transparent 60%); }
 .tc:hover::before { opacity:1; }
-.tc:hover { border-color:rgba(234,224,204,.1); }
+.tc:hover { border-color:rgba(234,224,204,.15); }
+/* amora card hover — warm terracotta beacon */
+.tc.am:hover::before {
+  background:
+    radial-gradient(ellipse at 90% 50%, rgba(210,85,22,.22) 0%, rgba(180,60,12,.1) 40%, transparent 70%),
+    radial-gradient(ellipse at 50% 100%, rgba(200,140,60,.12) 0%, transparent 50%);
+}
+/* soft matter card hover — rose-purple beacon */
+.tc.sm:hover::before {
+  background:
+    radial-gradient(ellipse at 10% 50%, rgba(165,18,85,.24) 0%, rgba(120,14,100,.12) 40%, transparent 70%),
+    radial-gradient(ellipse at 50% 100%, rgba(224,48,96,.12) 0%, transparent 50%);
+}
 .tc-tag  { font-family:'DM Mono',monospace; font-size:7px; letter-spacing:0.4em; text-transform:uppercase; display:flex; justify-content:space-between; }
 .tc.am .tc-tag { color:var(--amora-1); }
 .tc.sm .tc-tag { color:var(--soft-3); }
@@ -677,10 +691,12 @@ const FA=document.getElementById('FA'),FS=document.getElementById('FS');
 document.getElementById('WL').addEventListener('click',()=>{
   if(!hero.classList.contains('lean-left')) return;
   FA.classList.remove('go'); void FA.offsetWidth; FA.classList.add('go');
+  setTimeout(()=>{ window.location.href='amora-luz.html'; }, 320);
 });
 document.getElementById('WR').addEventListener('click',()=>{
   if(!hero.classList.contains('lean-right')) return;
   FS.classList.remove('go'); void FS.offsetWidth; FS.classList.add('go');
+  setTimeout(()=>{ window.location.href='soft-matter.html'; }, 320);
 });
 
 // ── LAVA BLOBS + CURSOR REACTIVITY ──

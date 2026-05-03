@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soft Matter — Between Forms</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,200;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --bone:    #EAE0CC;
+  --brass:   #C4A060;
+  --soft-3:  #E03060;
+  --soft-txt:#EAD0E8;
+  --honey:   #E8C840;
+  --cumin:   #C8661A;
+  --oxblood: #6B1F1F;
+  --navy:    #1C2433;
+  --dim:     rgba(234,224,204,.22);
+  /* glass panel color */
+  --glass:   rgba(180,140,80,.06);
+  --glass-border: rgba(200,160,90,.14);
+}
+
+html { scroll-behavior:smooth; }
+
+body {
+  width:100%; min-height:100vh;
+  cursor:none; overflow-x:hidden;
+  /* same unified deep space as landing but tilted toward soft matter */
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 0vh,
+      rgba(140,28,85,.22) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 60% at 100% 50%,
+      rgba(170,28,95,.16) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 0% 80%,
+      rgba(70,36,155,.14) 0%, transparent 55%),
+    radial-gradient(ellipse 80% 80% at 50% 50%,
+      rgba(30,15,45,.0) 0%, rgba(12,8,22,1) 100%),
+    #0D0818;
+  background-attachment:fixed;
+}
+
+/* grain */
+body::after {
+  content:''; position:fixed; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:9000; opacity:.5;
+}
+
+/* CURSOR */
+.cur {
+  position:fixed; width:7px; height:7px;
+  background:rgba(224,48,96,.9); border-radius:50%;
+  pointer-events:none; z-index:9999; transform:translate(-50%,-50%);
+  box-shadow:
+    0 0 5px rgba(224,48,96,.8),
+    0 0 14px rgba(180,28,80,.35),
+    0 0 28px rgba(140,18,70,.15);
+}
+.curR {
+  position:fixed; width:28px; height:28px;
+  border:1px solid rgba(224,48,96,.22); border-radius:50%;
+  pointer-events:none; z-index:9998; transform:translate(-50%,-50%);
+}
+
+/* VORTEX ENTRY OVERLAY */
+.vortex-in {
+  position:fixed; inset:0; z-index:8000;
+  background:radial-gradient(circle at 50% 50%,
+    rgba(224,48,96,.9) 0%,
+    rgba(140,18,80,.8) 30%,
+    rgba(58,26,139,.7) 60%,
+    #06040C 100%
+  );
+  animation:vortexIn 1.4s cubic-bezier(0.4,0,0.2,1) forwards;
+  pointer-events:none;
+}
+@keyframes vortexIn {
+  0%   { opacity:1; transform:scale(4); }
+  60%  { opacity:.8; transform:scale(1.05); }
+  100% { opacity:0; transform:scale(1); }
+}
+
+/* NAV */
+.nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:24px 48px;
+  display:flex; justify-content:space-between; align-items:center;
+  background:linear-gradient(to bottom, rgba(6,4,12,.8) 0%, transparent 100%);
+}
+.nav-back {
+  font-family:'DM Mono',monospace; font-size:8px;
+  letter-spacing:0.3em; text-transform:uppercase;
+  color:rgba(234,208,232,.4); text-decoration:none;
+  display:flex; align-items:center; gap:10px;
+  transition:color .3s ease;
+}
+.nav-back:hover { color:var(--soft-txt); }
+.nav-back-arrow { font-size:12px; }
+.nav-brand {
+  font-family:'Cormorant Garamond',serif; font-weight:300;
+  font-size:15px; letter-spacing:0.24em; text-transform:uppercase;
+  color:rgba(234,208,232,.35);
+  text-decoration:none; transition:color .3s;
+}
+.nav-brand:hover { color:var(--bone); }
+.nav-collection {
+  font-family:'DM Mono',monospace; font-size:8px;
+  letter-spacing:0.3em; text-transform:uppercase;
+  color:rgba(224,48,96,.6);
+}
+
+/* ═══════════════════════════════
+   EXHIBITION HERO — full viewport
+   three products floating in the case
+═══════════════════════════════ */
+.exhibition {
+  position:relative; width:100vw; height:100vh;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  overflow:hidden;
+}
+
+/* glass panel — the exhibition case */
+.glass-panel {
+  position:absolute;
+  border:1px solid var(--glass-border);
+  background: linear-gradient(
+    135deg,
+    rgba(200,160,80,.04) 0%,
+    rgba(180,120,60,.02) 40%,
+    rgba(200,48,96,.03) 70%,
+    rgba(140,18,80,.04) 100%
+  );
+  backdrop-filter:blur(1px);
+  border-radius:2px;
+}
+.gp1 { width:65%; height:78%; top:11%; left:17.5%; }
+.gp2 { width:40%; height:55%; top:22%; left:30%; opacity:.5; }
+
+/* ripple lines on glass */
+.glass-panel::before {
+  content:''; position:absolute; inset:0;
+  background:repeating-linear-gradient(
+    170deg,
+    transparent 0px,
+    transparent 18px,
+    rgba(200,160,80,.025) 18px,
+    rgba(200,160,80,.025) 19px
+  );
+  border-radius:inherit;
+}
+
+/* exhibition title */
+.exhibition-eyebrow {
+  position:relative; z-index:10;
+  font-family:'DM Mono',monospace; font-size:8px;
+  letter-spacing:0.5em; text-transform:uppercase;
+  color:rgba(224,48,96,.5);
+  margin-bottom:16px;
+  animation:fadeUp .8s ease .8s both;
+}
+
+.exhibition-title {
+  position:relative; z-index:10;
+  font-family:'DM Mono',monospace; font-weight:400;
+  font-size:clamp(11px,1.2vw,16px);
+  letter-spacing:0.38em; text-transform:uppercase;
+  color:rgba(234,208,232,.25);
+  margin-bottom:60px;
+  animation:fadeUp .8s ease 1s both;
+}
+
+/* floating products in exhibition */
+.floating-products {
+  position:relative; z-index:10;
+  display:flex; gap:80px; align-items:flex-end;
+  animation:fadeUp .8s ease 1.1s both;
+}
+
+.float-product {
+  display:flex; flex-direction:column; align-items:center; gap:16px;
+  cursor:pointer; position:relative;
+  transition:transform .6s cubic-bezier(0.34,1.45,0.64,1);
+}
+.float-product:hover { transform:translateY(-12px); }
+
+.float-img-wrap {
+  position:relative;
+  /* glow below the product */
+}
+.float-img-wrap::after {
+  content:''; position:absolute;
+  bottom:-20px; left:50%; transform:translateX(-50%);
+  width:80%; height:40px;
+  background:radial-gradient(ellipse, rgba(224,48,96,.25) 0%, transparent 70%);
+  filter:blur(8px);
+  animation:productGlow 4s ease-in-out infinite;
+}
+.float-product:nth-child(2) .float-img-wrap::after { animation-delay:-1.5s; }
+.float-product:nth-child(3) .float-img-wrap::after { animation-delay:-3s; }
+
+@keyframes productGlow {
+  0%,100%{opacity:.6; transform:translateX(-50%) scaleX(1);}
+  50%    {opacity:1;  transform:translateX(-50%) scaleX(1.15);}
+}
+
+.float-img {
+  width:clamp(140px,14vw,200px);
+  height:clamp(180px,18vw,260px);
+  object-fit:contain;
+  /* glass/transparent feel */
+  opacity:.82;
+  mix-blend-mode:lighten;
+  filter:drop-shadow(0 0 20px rgba(224,48,96,.2));
+  transition:opacity .4s ease, filter .4s ease;
+}
+.float-product:hover .float-img {
+  opacity:1;
+  filter:drop-shadow(0 0 30px rgba(224,48,96,.4));
+}
+
+/* pop color accent on hover */
+.float-product:nth-child(1):hover .float-img { filter:drop-shadow(0 0 28px rgba(200,102,26,.5)); }
+.float-product:nth-child(3):hover .float-img { filter:drop-shadow(0 0 28px rgba(232,200,64,.4)); }
+
+.float-label {
+  font-family:'DM Mono',monospace; font-size:8px;
+  letter-spacing:0.32em; text-transform:uppercase;
+  color:rgba(234,208,232,.3);
+  transition:color .3s ease;
+}
+.float-product:hover .float-label { color:rgba(234,208,232,.8); }
+
+.float-num {
+  font-family:'DM Mono',monospace; font-size:7px;
+  letter-spacing:0.2em; color:rgba(224,48,96,.4);
+}
+
+/* scroll hint */
+.exhibition-scroll {
+  position:absolute; bottom:32px; left:50%; transform:translateX(-50%);
+  z-index:10; display:flex; flex-direction:column; align-items:center; gap:8px;
+  animation:fadeUp .8s ease 1.4s both;
+}
+.exhibition-scroll-txt {
+  font-family:'DM Mono',monospace; font-size:7px;
+  letter-spacing:0.4em; text-transform:uppercase;
+  color:rgba(234,208,232,.24);
+}
+.exhibition-scroll-line {
+  width:1px; height:28px;
+  background:linear-gradient(to bottom, rgba(224,48,96,.4), transparent);
+  animation:scrollPulse 2.4s ease infinite;
+}
+@keyframes scrollPulse { 0%,100%{opacity:.3;}50%{opacity:1;} }
+
+/* ═══════════════════════════════
+   PRODUCT SECTIONS — cinematic scroll
+═══════════════════════════════ */
+.product-section {
+  min-height:100vh; position:relative;
+  display:flex; flex-direction:column;
+  padding:0;
+  border-top:1px solid rgba(200,160,80,.06);
+}
+
+/* product hero — full viewport */
+.product-hero {
+  height:100vh; position:relative;
+  display:grid; grid-template-columns:1fr 1fr;
+  align-items:center;
+  padding:0 80px;
+  gap:60px;
+}
+
+/* LEFT — image stage */
+.product-stage {
+  position:relative;
+  display:flex; justify-content:center; align-items:center;
+  height:80vh;
+}
+
+/* beacon glow under product */
+.stage-beacon {
+  position:absolute; bottom:10%; left:50%; transform:translateX(-50%);
+  width:300px; height:300px; border-radius:50%;
+  background:radial-gradient(circle, rgba(224,48,96,.18) 0%, rgba(140,18,80,.08) 45%, transparent 70%);
+  animation:stageGlow 5s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes stageGlow {
+  0%,100%{transform:translateX(-50%) scale(1); opacity:.7;}
+  50%    {transform:translateX(-50%) scale(1.2); opacity:1;}
+}
+
+/* glass reflection panel behind product */
+.stage-glass {
+  position:absolute; inset:5% 10%;
+  border:1px solid var(--glass-border);
+  background:linear-gradient(135deg,
+    rgba(200,160,80,.04) 0%,
+    rgba(224,48,96,.02) 50%,
+    rgba(140,18,80,.04) 100%
+  );
+  border-radius:2px;
+}
+.stage-glass::before {
+  content:''; position:absolute; inset:0;
+  background:repeating-linear-gradient(
+    162deg,
+    transparent 0px, transparent 22px,
+    rgba(200,160,80,.02) 22px, rgba(200,160,80,.02) 23px
+  );
+}
+
+/* product image */
+.product-img {
+  position:relative; z-index:5;
+  width:clamp(260px,28vw,400px);
+  height:clamp(340px,38vw,520px);
+  object-fit:contain;
+  opacity:.9;
+  mix-blend-mode:lighten;
+  filter:drop-shadow(0 0 30px rgba(224,48,96,.15));
+  transition:filter .5s ease;
+}
+
+/* light toggle button */
+.light-toggle {
+  position:absolute; bottom:8%; left:50%; transform:translateX(-50%);
+  z-index:10;
+  font-family:'DM Mono',monospace; font-size:7.5px;
+  letter-spacing:0.3em; text-transform:uppercase;
+  color:rgba(234,208,232,.35);
+  background:rgba(224,48,96,.04);
+  border:1px solid rgba(224,48,96,.15);
+  padding:10px 20px; cursor:pointer;
+  display:flex; align-items:center; gap:10px;
+  transition:all .3s ease;
+}
+.light-toggle:hover { color:var(--soft-txt); border-color:rgba(224,48,96,.4); background:rgba(224,48,96,.08); }
+.light-indicator {
+  width:6px; height:6px; border-radius:50%;
+  background:rgba(224,48,96,.4);
+  box-shadow:0 0 8px rgba(224,48,96,.3);
+  transition:all .4s ease;
+}
+.light-toggle.on .light-indicator {
+  background:rgba(255,200,120,.9);
+  box-shadow:0 0 12px rgba(255,200,120,.6), 0 0 24px rgba(255,180,80,.3);
+}
+.light-toggle.on { color:var(--bone); border-color:rgba(255,200,120,.3); }
+
+/* image nav arrows */
+.img-nav {
+  position:absolute; top:50%; transform:translateY(-50%);
+  z-index:10; display:flex; align-items:center; justify-content:space-between;
+  width:100%; padding:0 12px; pointer-events:none;
+}
+.img-arrow {
+  font-family:'DM Mono',monospace; font-size:11px;
+  color:rgba(234,208,232,.3); cursor:pointer; pointer-events:all;
+  width:32px; height:32px; display:flex; align-items:center; justify-content:center;
+  border:1px solid rgba(234,208,232,.1);
+  transition:all .3s ease;
+}
+.img-arrow:hover { color:var(--soft-txt); border-color:rgba(234,208,232,.3); }
+
+/* image counter */
+.img-counter {
+  position:absolute; bottom:16%; left:50%; transform:translateX(-50%);
+  z-index:10; font-family:'DM Mono',monospace; font-size:7px;
+  letter-spacing:0.2em; color:rgba(234,208,232,.2);
+  display:flex; gap:8px;
+}
+.img-dot {
+  width:4px; height:4px; border-radius:50%;
+  background:rgba(234,208,232,.2);
+  transition:background .3s, box-shadow .3s;
+}
+.img-dot.active {
+  background:rgba(224,48,96,.7);
+  box-shadow:0 0 6px rgba(224,48,96,.4);
+}
+
+/* RIGHT — product info */
+.product-info {
+  position:relative; z-index:5;
+  display:flex; flex-direction:column; gap:0;
+}
+
+.product-number {
+  font-family:'DM Mono',monospace; font-size:8px;
+  letter-spacing:0.4em; text-transform:uppercase;
+  color:rgba(224,48,96,.5); margin-bottom:20px;
+}
+
+.product-name {
+  font-family:'DM Mono',monospace; font-weight:400;
+  font-size:clamp(28px,4vw,52px);
+  letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--soft-txt); line-height:1.1;
+  margin-bottom:8px;
+}
+
+.product-tagline {
+  font-family:'Cormorant Garamond',serif; font-weight:300; font-style:italic;
+  font-size:clamp(16px,1.8vw,22px);
+  color:rgba(234,208,232,.45); margin-bottom:40px;
+  line-height:1.4;
+}
+
+/* color/finish swatches */
+.product-finishes {
+  display:flex; align-items:center; gap:10px; margin-bottom:44px;
+}
+.finish-label {
+  font-family:'DM Mono',monospace; font-size:7px;
+  letter-spacing:0.3em; text-transform:uppercase;
+  color:rgba(234,208,232,.28); margin-right:6px;
+}
+.finish-dot {
+  width:16px; height:16px; border-radius:50%;
+  border:1px solid rgba(234,208,232,.15);
+  cursor:pointer; position:relative;
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.finish-dot:hover { transform:scale(1.2); }
+.finish-dot.active { box-shadow:0 0 0 2px rgba(234,208,232,.3); }
+.finish-sand     { background:#C4A882; }
+.finish-graphite { background:#4A4E52; }
+.finish-bone     { background:#E8E0D0; }
+.finish-oxblood  { background:#6B1F1F; }
+
+.product-desc {
+  font-family:'DM Mono',monospace; font-size:11px;
+  font-weight:300; line-height:2;
+  color:rgba(234,208,232,.42); max-width:420px;
+  margin-bottom:44px;
+}
+
+/* spec strip */
+.spec-strip {
+  display:flex; align-items:center; gap:0;
+  border-top:1px solid rgba(200,160,80,.1);
+  border-bottom:1px solid rgba(200,160,80,.1);
+  padding:16px 0; margin-bottom:44px;
+  overflow-x:auto;
+}
+.spec-item {
+  display:flex; flex-direction:column; gap:5px;
+  padding:0 22px; flex-shrink:0;
+  border-right:1px solid rgba(200,160,80,.1);
+}
+.spec-item:first-child { padding-left:0; }
+.spec-item:last-child  { border-right:none; }
+.spec-key {
+  font-family:'DM Mono',monospace; font-size:6.5px;
+  letter-spacing:0.3em; text-transform:uppercase;
+  color:rgba(224,48,96,.45);
+}
+.spec-val {
+  font-family:'DM Mono',monospace; font-size:10px;
+  color:rgba(234,208,232,.65); letter-spacing:0.05em;
+}
+
+/* badges */
+.product-badges {
+  display:flex; flex-wrap:wrap; gap:8px; margin-bottom:44px;
+}
+.badge {
+  font-family:'DM Mono',monospace; font-size:7px;
+  letter-spacing:0.22em; text-transform:uppercase;
+  color:rgba(234,208,232,.35);
+  border:1px solid rgba(234,208,232,.1);
+  padding:7px 12px;
+}
+
+/* CTA */
+.product-cta {
+  display:flex; gap:12px; align-items:center;
+}
+.btn-primary {
+  font-family:'DM Mono',monospace; font-size:8px;
+  letter-spacing:0.3em; text-transform:uppercase;
+  color:var(--soft-txt); background:rgba(224,48,96,.12);
+  border:1px solid rgba(224,48,96,.3);
+  padding:14px 28px; cursor:pointer;
+  text-decoration:none; position:relative;
+  transition:all .3s ease;
+}
+.btn-primary::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:1px;
+  background:var(--soft-3); transform:scaleX(0); transition:transform .3s;
+}
+.btn-primary:hover { background:rgba(224,48,96,.2); border-color:rgba(224,48,96,.5); }
+.btn-primary:hover::after { transform:scaleX(1); }
+.btn-secondary {
+  font-family:'DM Mono',monospace; font-size:8px;
+  letter-spacing:0.3em; text-transform:uppercase;
+  color:rgba(234,208,232,.3); background:transparent;
+  border:1px solid rgba(234,208,232,.1);
+  padding:14px 24px; cursor:pointer;
+  text-decoration:none; transition:all .3s ease;
+}
+.btn-secondary:hover { color:var(--bone); border-color:rgba(234,208,232,.3); }
+
+/* ═══════════════════════════════
+   BETWEEN PRODUCTS — transition strip
+═══════════════════════════════ */
+.product-transition {
+  height:40vh; position:relative;
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+}
+.pt-line {
+  position:absolute; left:50%; top:0; bottom:0;
+  width:1px; background:linear-gradient(to bottom,
+    transparent 0%, rgba(224,48,96,.2) 30%,
+    rgba(224,48,96,.2) 70%, transparent 100%
+  );
+}
+.pt-label {
+  font-family:'DM Mono',monospace; font-size:7px;
+  letter-spacing:0.4em; text-transform:uppercase;
+  color:rgba(234,208,232,.18);
+  background:rgba(6,4,12,.8); padding:0 20px;
+  position:relative; z-index:2;
+}
+
+/* pop color accent bars — Boby palette */
+.color-bar {
+  position:absolute; height:2px; left:0; right:0;
+  opacity:.3;
+}
+.cb-top    { top:0;    background:linear-gradient(to right, transparent, var(--cumin), transparent); }
+.cb-bottom { bottom:0; background:linear-gradient(to right, transparent, var(--honey), transparent); }
+
+/* ═══════════════════════════════
+   COLLECTION OUTRO
+═══════════════════════════════ */
+.collection-outro {
+  padding:120px 80px;
+  display:flex; flex-direction:column; align-items:center;
+  text-align:center; gap:24px; position:relative;
+  border-top:1px solid rgba(200,160,80,.06);
+}
+.outro-eye {
+  font-family:'DM Mono',monospace; font-size:8px;
+  letter-spacing:0.44em; text-transform:uppercase;
+  color:rgba(224,48,96,.5);
+}
+.outro-head {
+  font-family:'Cormorant Garamond',serif; font-weight:300; font-style:italic;
+  font-size:clamp(28px,4vw,52px); color:var(--bone); letter-spacing:-.01em;
+}
+.outro-sub {
+  font-family:'DM Mono',monospace; font-size:10px;
+  font-weight:300; color:rgba(234,208,232,.32);
+  line-height:1.9; max-width:380px;
+}
+.notify-form {
+  display:flex; border:1px solid rgba(224,48,96,.2);
+  max-width:400px; width:100%; margin-top:8px;
+}
+.notify-in {
+  flex:1; background:transparent; border:none; outline:none;
+  padding:14px 20px; font-family:'DM Mono',monospace;
+  font-size:10px; color:var(--bone); letter-spacing:.05em;
+}
+.notify-in::placeholder { color:rgba(234,208,232,.18); }
+.notify-btn {
+  background:transparent; border:none;
+  border-left:1px solid rgba(224,48,96,.2);
+  padding:14px 22px; font-family:'DM Mono',monospace;
+  font-size:8px; letter-spacing:0.3em; text-transform:uppercase;
+  color:rgba(224,48,96,.6); cursor:pointer;
+  transition:all .3s;
+}
+.notify-btn:hover { background:rgba(224,48,96,.08); color:var(--soft-txt); }
+
+/* footer */
+.footer {
+  padding:28px 80px; border-top:1px solid rgba(234,224,204,.03);
+  display:flex; justify-content:space-between; align-items:center;
+}
+.f-brand { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; color:rgba(234,224,204,.16); text-decoration:none; }
+.f-links { display:flex; gap:24px; }
+.f-link  { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:0.24em; text-transform:uppercase; color:rgba(234,224,204,.15); text-decoration:none; transition:color .3s; }
+.f-link:hover { color:var(--bone); }
+.f-copy  { font-family:'DM Mono',monospace; font-size:7px; letter-spacing:0.14em; color:rgba(234,224,204,.08); }
+
+/* animations */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(24px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* scroll reveal */
+.reveal {
+  opacity:0; transform:translateY(32px);
+  transition:opacity .9s ease, transform .9s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal.visible { opacity:1; transform:translateY(0); }
+.reveal-delay-1 { transition-delay:.1s; }
+.reveal-delay-2 { transition-delay:.22s; }
+.reveal-delay-3 { transition-delay:.36s; }
+.reveal-delay-4 { transition-delay:.5s; }
+
+@media(max-width:768px){
+  .product-hero { grid-template-columns:1fr; height:auto; padding:100px 24px 60px; gap:40px; }
+  .product-stage { height:50vw; min-height:280px; }
+  .nav { padding:18px 24px; }
+  .collection-outro { padding:80px 24px; }
+  .footer { flex-direction:column; gap:16px; padding:28px 24px; text-align:center; }
+  .f-links { flex-wrap:wrap; justify-content:center; }
+  .floating-products { gap:24px; }
+  .float-img { width:clamp(90px,22vw,130px); height:clamp(120px,28vw,170px); }
+}
+</style>
+</head>
+<body>
+
+<!-- VORTEX ENTRY -->
+<div class="vortex-in"></div>
+
+<!-- CURSOR -->
+<div class="cur" id="C"></div>
+<div class="curR" id="CR"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="nav-back">
+    <span class="nav-back-arrow">←</span>
+    <span>Between Forms</span>
+  </a>
+  <a href="index.html" class="nav-brand">Between Forms</a>
+  <span class="nav-collection">Soft Matter</span>
+</nav>
+
+<!-- EXHIBITION HERO -->
+<section class="exhibition">
+  <!-- glass panels -->
+  <div class="glass-panel gp1"></div>
+  <div class="glass-panel gp2"></div>
+
+  <div class="exhibition-eyebrow">Collection II</div>
+  <div class="exhibition-title">Soft Matter — Adaptive Lighting Objects</div>
+
+  <div class="floating-products">
+    <!-- Product 01 — Arana -->
+    <div class="float-product" onclick="scrollToProduct('arana')">
+      <div class="float-num">01</div>
+      <div class="float-img-wrap">
+        <img src="C.webp" alt="Arana" class="float-img">
+      </div>
+      <div class="float-label">Arana</div>
+    </div>
+    <!-- Product 02 — Helioform -->
+    <div class="float-product" onclick="scrollToProduct('helioform')" style="padding-bottom:40px;">
+      <div class="float-num">02</div>
+      <div class="float-img-wrap">
+        <img src="a.webp" alt="Helioform" class="float-img">
+      </div>
+      <div class="float-label">Helioform</div>
+    </div>
+    <!-- Product 03 — Visiona II -->
+    <div class="float-product" onclick="scrollToProduct('visiona')">
+      <div class="float-num">03</div>
+      <div class="float-img-wrap">
+        <img src="B.webp" alt="Visiona II" class="float-img">
+      </div>
+      <div class="float-label">Visiona II</div>
+    </div>
+  </div>
+
+  <div class="exhibition-scroll">
+    <div class="exhibition-scroll-txt">Scroll to explore</div>
+    <div class="exhibition-scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══ PRODUCT 01 — ARANA ═══ -->
+<section class="product-section" id="arana">
+  <div class="product-hero">
+    <!-- Stage -->
+    <div class="product-stage">
+      <div class="stage-glass"></div>
+      <div class="stage-beacon"></div>
+      <div class="img-nav">
+        <div class="img-arrow" onclick="prevImg('arana')">←</div>
+        <div class="img-arrow" onclick="nextImg('arana')">→</div>
+      </div>
+      <img src="C.webp" alt="Arana" class="product-img" id="arana-img">
+      <div class="img-counter">
+        <div class="img-dot active" data-product="arana" data-i="0"></div>
+        <div class="img-dot" data-product="arana" data-i="1"></div>
+        <div class="img-dot" data-product="arana" data-i="2"></div>
+      </div>
+      <button class="light-toggle" id="arana-toggle" onclick="toggleLight('arana')">
+        <div class="light-indicator"></div>
+        <span>Light off</span>
+      </button>
+    </div>
+
+    <!-- Info -->
+    <div class="product-info reveal">
+      <div class="product-number reveal reveal-delay-1">Object No. 01</div>
+      <div class="product-name reveal reveal-delay-1">Arana</div>
+      <div class="product-tagline reveal reveal-delay-2">Task light. Ambient instrument.<br>Spider DNA, reimagined.</div>
+
+      <div class="product-finishes reveal reveal-delay-2">
+        <span class="finish-label">Finish</span>
+        <div class="finish-dot finish-sand active" title="Sand"></div>
+        <div class="finish-dot finish-graphite" title="Graphite"></div>
+        <div class="finish-dot finish-bone" title="Bone"></div>
+        <div class="finish-dot finish-oxblood" title="Oxblood"></div>
+      </div>
+
+      <div class="product-desc reveal reveal-delay-2">
+        Three hinged panels. One central light source, two adjustable reflectors. Rotate the panels and Arana shifts from a focused task beam to a wide lambertian wash — and everything in between. No modes. No apps. Just your hands, shaping light.
+      </div>
+
+      <div class="spec-strip reveal reveal-delay-3">
+        <div class="spec-item">
+          <span class="spec-key">Output</span>
+          <span class="spec-val">Up to 400lm</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-key">Color Temp</span>
+          <span class="spec-val">2700–4000K</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-key">CRI</span>
+          <span class="spec-val">95+</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-key">Material</span>
+          <span class="spec-val">Satin Aluminum</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-key">Control</span>
+          <span class="spec-val">Rotary Dim</span>
+        </div>
+      </div>
+
+      <div class="product-badges reveal reveal-delay-3">
+        <div class="badge">Tactile Control</div>
+        <div class="badge">Task → Ambient</div>
+        <div class="badge">Hinged Panels</div>
+        <div class="badge">CRI 95+</div>
+      </div>
+
+      <div class="product-cta reveal reveal-delay-4">
+        <a href="#notify" class="btn-primary">Notify Me</a>
+        <a href="#" class="btn-secondary">Learn More</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- transition -->
+<div class="product-transition">
+  <div class="color-bar cb-top"></div>
+  <div class="pt-line"></div>
+  <div class="pt-label">02 / 03</div>
+  <div class="color-bar cb-bottom"></div>
+</div>
+
+<!-- ═══ PRODUCT 02 — HELIOFORM ═══ -->
+<section class="product-section" id="helioform">
+  <div class="product-hero">
+    <div class="product-stage">
+      <div class="stage-glass"></div>
+      <div class="stage-beacon" style="background:radial-gradient(circle, rgba(237,213,168,.2) 0%, rgba(196,160,96,.08) 45%, transparent 70%);"></div>
+      <div class="img-nav">
+        <div class="img-arrow" onclick="prevImg('helioform')">←</div>
+        <div class="img-arrow" onclick="nextImg('helioform')">→</div>
+      </div>
+      <img src="a.webp" alt="Helioform" class="product-img" id="helioform-img">
+      <div class="img-counter">
+        <div class="img-dot active" data-product="helioform" data-i="0"></div>
+        <div class="img-dot" data-product="helioform" data-i="1"></div>
+        <div class="img-dot" data-product="helioform" data-i="2"></div>
+      </div>
+      <button class="light-toggle" id="helioform-toggle" onclick="toggleLight('helioform')">
+        <div class="light-indicator"></div>
+        <span>Light off</span>
+      </button>
+    </div>
+
+    <div class="product-info reveal">
+      <div class="product-number reveal reveal-delay-1">Object No. 02</div>
+      <div class="product-name reveal reveal-delay-1">Helioform</div>
+      <div class="product-tagline reveal reveal-delay-2">A light that moves<br>with you.</div>
+
+      <div class="product-finishes reveal reveal-delay-2">
+        <span class="finish-label">Finish</span>
+        <div class="finish-dot finish-sand active" title="Sand"></div>
+        <div class="finish-dot finish-graphite" title="Graphite"></div>
+        <div class="finish-dot finish-bone" title="Bone"></div>
+      </div>
+
+      <div class="product-desc reveal reveal-delay-2">
+        Pick it up. Move it. Place it anywhere. Helioform is a portable light sphere that adapts to your space — not the other way around. Magnetic docks throughout your home. Rotate to dim. Up to 8 hours of warm, diffused light on a single charge.
+      </div>
+
+      <div class="spec-strip reveal reveal-delay-3">
+        <div class="spec-item">
+          <span class="spec-key">Output</span>
+          <span class="spec-val">Up to 220lm</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-key">Color Temp</span>
+          <span class="spec-val">1800–4000K</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-key">Battery</span>
+          <span class="spec-val">8 Hours</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-key">Charge</span>
+          <span class="spec-val">USB-C / Dock</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-key">CRI</span>
+          <span class="spec-val">95+</span>
+        </div>
+      </div>
+
+      <div class="product-badges reveal reveal-delay-3">
+        <div class="badge">Portable</div>
+        <div class="badge">Magnetic Dock</div>
+        <div class="badge">Rotary Dim</div>
+        <div class="badge">8hr Battery</div>
+      </div>
+
+      <div class="product-cta reveal reveal-delay-4">
+        <a href="#notify" class="btn-primary">Notify Me</a>
+        <a href="#" class="btn-secondary">Learn More</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- transition -->
+<div class="product-transition">
+  <div class="color-bar cb-top" style="background:linear-gradient(to right, transparent, var(--honey), transparent);"></div>
+  <div class="pt-line"></div>
+  <div class="pt-label">03 / 03</div>
+  <div class="color-bar cb-bottom" style="background:linear-gradient(to right, transparent, var(--oxblood), transparent);"></div>
+</div>
+
+<!-- ═══ PRODUCT 03 — VISIONA II ═══ -->
+<section class="product-section" id="visiona">
+  <div class="product-hero">
+    <div class="product-stage">
+      <div class="stage-glass"></div>
+      <div class="stage-beacon" style="background:radial-gradient(circle, rgba(200,102,26,.2) 0%, rgba(140,60,10,.08) 45%, transparent 70%);"></div>
+      <div class="img-nav">
+        <div class="img-arrow" onclick="prevImg('visiona')">←</div>
+        <div class="img-arrow" onclick="nextImg('visiona')">→</div>
+      </div>
+      <img src="B.webp" alt="Visiona II" class="product-img" id="visiona-img">
+      <div class="img-counter">
+        <div class="img-dot active" data-product="visiona" data-i="0"></div>
+        <div class="img-dot" data-product="visiona" data-i="1"></div>
+        <div class="img-dot" data-product="visiona" data-i="2"></div>
+      </div>
+      <button class="light-toggle" id="visiona-toggle" onclick="toggleLight('visiona')">
+        <div class="light-indicator"></div>
+        <span>Light off</span>
+      </button>
+    </div>
+
+    <div class="product-info reveal">
+      <div class="product-number reveal reveal-delay-1">Object No. 03</div>
+      <div class="product-name reveal reveal-delay-1">Visiona II</div>
+      <div class="product-tagline reveal reveal-delay-2">The lighting instrument.<br>Your room, conducted.</div>
+
+      <div class="product-finishes reveal reveal-delay-2">
+        <span class="finish-label">Finish</span>
+        <div class="finish-dot finish-graphite active" title="Graphite"></div>
+        <div class="finish-dot finish-bone" title="Bone"></div>
+      </div>
+
+      <div class="product-desc reveal reveal-delay-2">
+        A tabletop control console for the entire Soft Matter ecosystem. Knobs, dials, a minimal display. No app. No voice commands. Just the satisfying resistance of a dial as you tune the atmosphere of your room — circadian rhythm, mood, scene. The instrument Colombo imagined. Finally real.
+      </div>
+
+      <div class="spec-strip reveal reveal-delay-3">
+        <div class="spec-item">
+          <span class="spec-key">Zones</span>
+          <span class="spec-val">Up to 8</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-key">Control</span>
+          <span class="spec-val">Physical Dials</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-key">Display</span>
+          <span class="spec-val">Minimal OLED</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-key">Protocol</span>
+          <span class="spec-val">Matter / WiFi</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-key">Material</span>
+          <span class="spec-val">CNC Aluminum</span>
+        </div>
+      </div>
+
+      <div class="product-badges reveal reveal-delay-3">
+        <div class="badge">No App Required</div>
+        <div class="badge">Circadian Mode</div>
+        <div class="badge">8 Zone Control</div>
+        <div class="badge">Ecosystem Hub</div>
+      </div>
+
+      <div class="product-cta reveal reveal-delay-4">
+        <a href="#notify" class="btn-primary">Notify Me</a>
+        <a href="#" class="btn-secondary">Learn More</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OUTRO -->
+<section class="collection-outro" id="notify">
+  <div class="outro-eye">Soft Matter — Est. 2025</div>
+  <h2 class="outro-head">Light you shape<br>with your hands.</h2>
+  <p class="outro-sub">Three objects. One ecosystem. Launching soon — join the list for early access and first look.</p>
+  <div class="notify-form">
+    <input class="notify-in" type="email" placeholder="your@email.com">
+    <button class="notify-btn">Notify me</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <a href="index.html" class="f-brand">Between Forms</a>
+  <div class="f-links">
+    <a href="https://instagram.com/btwn_forms" class="f-link" target="_blank">Instagram</a>
+    <a href="index.html" class="f-link">Studio</a>
+    <a href="#notify" class="f-link">Contact</a>
+  </div>
+  <div class="f-copy">© 2025 Between Forms</div>
+</footer>
+
+<script>
+// ── CURSOR ──
+const C=document.getElementById('C'), CR=document.getElementById('CR');
+let mx=window.innerWidth/2, my=window.innerHeight/2, cx=mx, cy=my, rx=mx, ry=my;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+(function tick(){
+  cx+=(mx-cx)*.13; cy+=(my-cy)*.13;
+  rx+=(mx-rx)*.06; ry+=(my-ry)*.06;
+  C.style.left=cx+'px'; C.style.top=cy+'px';
+  CR.style.left=rx+'px'; CR.style.top=ry+'px';
+  requestAnimationFrame(tick);
+})();
+
+// ── SCROLL TO PRODUCT ──
+function scrollToProduct(id){
+  document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+
+// ── IMAGE STATE ──
+const productImgs = {
+  arana:    ['C.webp','a.webp','B.webp'],
+  helioform:['a.webp','C.webp','B.webp'],
+  visiona:  ['B.webp','C.webp','a.webp'],
+};
+const productIdx = { arana:0, helioform:0, visiona:0 };
+
+function setImg(product, idx){
+  const imgs = productImgs[product];
+  productIdx[product] = (idx + imgs.length) % imgs.length;
+  document.getElementById(product+'-img').src = imgs[productIdx[product]];
+  // update dots
+  document.querySelectorAll(`[data-product="${product}"]`).forEach(d => {
+    d.classList.toggle('active', parseInt(d.dataset.i) === productIdx[product]);
+  });
+}
+function nextImg(p){ setImg(p, productIdx[p]+1); }
+function prevImg(p){ setImg(p, productIdx[p]-1); }
+
+// ── LIGHT TOGGLE ──
+function toggleLight(product){
+  const btn = document.getElementById(product+'-toggle');
+  const on = btn.classList.toggle('on');
+  btn.querySelector('span').textContent = on ? 'Light on' : 'Light off';
+  const img = document.getElementById(product+'-img');
+  if(on){
+    img.style.filter = 'drop-shadow(0 0 40px rgba(255,200,120,.5)) drop-shadow(0 0 80px rgba(255,180,80,.2)) brightness(1.15)';
+    img.style.opacity = '1';
+  } else {
+    img.style.filter = 'drop-shadow(0 0 30px rgba(224,48,96,.15))';
+    img.style.opacity = '.9';
+  }
+}
+
+// ── SCROLL REVEAL ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold:0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── FINISH DOTS ──
+document.querySelectorAll('.finish-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    dot.closest('.product-finishes').querySelectorAll('.finish-dot').forEach(d => d.classList.remove('active'));
+    dot.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
