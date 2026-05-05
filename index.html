@@ -53,6 +53,162 @@ body {
 }
 
 /* ── INTRO ANIMATION OVERLAY ── */
+/* ── PASSWORD GATE ── */
+/* ── PASSWORD GATE ── */
+#pwGate {
+  position:fixed; inset:0; z-index:9800;
+  background:#050303;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:28px;
+  transition:opacity .8s ease;
+}
+#pwGate.fade-out { opacity:0; pointer-events:none; }
+
+/* terminal scan line effect */
+#pwGate::before {
+  content:'';
+  position:absolute; inset:0;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 3px,
+    rgba(0,0,0,.15) 3px,
+    rgba(0,0,0,.15) 4px
+  );
+  pointer-events:none; z-index:1;
+}
+
+/* subtle CRT flicker */
+#pwGate::after {
+  content:'';
+  position:absolute; inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 50%,
+    transparent 40%, rgba(0,0,0,.35) 100%
+  );
+  pointer-events:none; z-index:1;
+}
+
+#pwTerminal {
+  position:relative; z-index:2;
+  display:flex; flex-direction:column;
+  align-items:flex-start; gap:14px;
+  font-family:'DM Mono',monospace;
+  width:320px;
+}
+
+#pwTermHeader {
+  font-size:8px; letter-spacing:0.15em;
+  color:rgba(180,220,160,.35);
+  line-height:1.8;
+  border-bottom:1px solid rgba(180,220,160,.12);
+  padding-bottom:10px; width:100%;
+}
+
+#pwTermLabel {
+  font-size:8px; letter-spacing:0.22em; text-transform:uppercase;
+  color:rgba(180,220,160,.4);
+}
+
+/* the cell row */
+#pwCells {
+  display:flex; gap:6px; align-items:center;
+}
+
+.pw-cell {
+  width:32px; height:38px;
+  border:1px solid rgba(180,220,160,.2);
+  background:rgba(0,20,0,.4);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'DM Mono',monospace;
+  font-size:18px; letter-spacing:0;
+  color:transparent;
+  position:relative;
+  transition:border-color .2s, box-shadow .2s, background .2s;
+}
+
+/* filled cell glow — each in collection color */
+.pw-cell.filled-0 {
+  border-color:rgba(225,92,24,.7);
+  background:rgba(225,92,24,.08);
+  box-shadow:0 0 12px rgba(225,92,24,.25), inset 0 0 8px rgba(225,92,24,.1);
+  color:rgba(225,92,24,.9);
+}
+.pw-cell.filled-1 {
+  border-color:rgba(200,148,40,.7);
+  background:rgba(200,148,40,.08);
+  box-shadow:0 0 12px rgba(200,148,40,.25), inset 0 0 8px rgba(200,148,40,.1);
+  color:rgba(200,148,40,.9);
+}
+.pw-cell.filled-2 {
+  border-color:rgba(175,20,90,.7);
+  background:rgba(175,20,90,.08);
+  box-shadow:0 0 12px rgba(175,20,90,.25), inset 0 0 8px rgba(175,20,90,.1);
+  color:rgba(175,20,90,.9);
+}
+.pw-cell.filled-3 {
+  border-color:rgba(224,48,96,.7);
+  background:rgba(224,48,96,.08);
+  box-shadow:0 0 12px rgba(224,48,96,.25), inset 0 0 8px rgba(224,48,96,.1);
+  color:rgba(224,48,96,.9);
+}
+
+/* cursor blink on active cell */
+.pw-cell.active::after {
+  content:'';
+  position:absolute;
+  bottom:6px; left:50%; transform:translateX(-50%);
+  width:14px; height:2px;
+  background:rgba(180,220,160,.6);
+  animation:cellBlink .8s ease-in-out infinite;
+}
+@keyframes cellBlink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+/* error state */
+.pw-cell.error {
+  border-color:rgba(224,48,96,.8) !important;
+  background:rgba(224,48,96,.1) !important;
+  box-shadow:0 0 16px rgba(224,48,96,.3) !important;
+  animation:cellShake .4s ease;
+}
+@keyframes cellShake {
+  0%,100%{transform:translateX(0);}
+  25%{transform:translateX(-4px);}
+  75%{transform:translateX(4px);}
+}
+
+#pwTermFooter {
+  font-size:7px; letter-spacing:0.22em;
+  color:rgba(180,220,160,.22);
+  line-height:1.8; width:100%;
+  border-top:1px solid rgba(180,220,160,.08);
+  padding-top:10px;
+}
+
+#pwError {
+  font-family:'DM Mono',monospace; font-size:7px;
+  letter-spacing:0.3em; text-transform:uppercase;
+  color:rgba(224,48,96,.6);
+  opacity:0; transition:opacity .2s ease;
+  height:12px;
+}
+#pwError.show { opacity:1; }
+
+/* glow burst */
+#pwGlow {
+  position:fixed; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:0; height:0; border-radius:50%;
+  pointer-events:none; opacity:0;
+  margin:0;
+}
+#pwGlow.burst { animation:pwBurst .7s ease-out forwards; }
+@keyframes pwBurst {
+  0%  { opacity:.4; width:0;    height:0;    margin:0; }
+  40% { opacity:.3; width:400px;height:400px;margin:-200px 0 0 -200px; }
+  100%{ opacity:0;  width:600px;height:600px;margin:-300px 0 0 -300px; }
+}
+
 #intro-overlay {
   position:fixed; inset:0; z-index:8500;
   pointer-events:none;
@@ -574,6 +730,30 @@ body::after {
 </head>
 <body>
 
+<!-- PASSWORD GATE -->
+<div id="pwGate">
+  <div id="pwGlow"></div>
+  <input id="pwInput" type="password" autocomplete="off" style="position:fixed;opacity:0;top:50%;left:50%;width:1px;height:1px;border:none;outline:none;background:transparent;">
+  <div id="pwTerminal">
+    <div id="pwTermHeader">
+      BETWEEN FORMS / / ACCESS TERMINAL<br>
+      SYSTEM LOCK ACTIVE — AUTHORIZATION REQUIRED
+    </div>
+    <div id="pwTermLabel">Enter Access Code</div>
+    <div id="pwCells">
+      <div class="pw-cell active" id="pc0"></div>
+      <div class="pw-cell" id="pc1"></div>
+      <div class="pw-cell" id="pc2"></div>
+      <div class="pw-cell" id="pc3"></div>
+    </div>
+    <div id="pwError">// ACCESS DENIED</div>
+    <div id="pwTermFooter">
+      BETWEEN FORMS STUDIO — EST. 2025<br>
+      40°38'N 73°45'W · · · 19°04'N 72°52'E
+    </div>
+  </div>
+</div>
+
 <canvas id="curLight"></canvas>
 <canvas id="mobTrail"></canvas>
 <div id="intro-overlay"></div>
@@ -703,6 +883,114 @@ body::after {
 </footer>
 
 <script>
+// ── PASSWORD GATE ──
+(function(){
+  const gate   = document.getElementById('pwGate');
+  const glow   = document.getElementById('pwGlow');
+  const errEl  = document.getElementById('pwError');
+  const cells  = [0,1,2,3].map(i=>document.getElementById('pc'+i));
+  const input  = document.getElementById('pwInput');
+  const PW     = 'hola';
+  const COLORS = [
+    'rgba(225,92,24,.5)',
+    'rgba(200,148,40,.5)',
+    'rgba(175,20,90,.5)',
+    'rgba(224,48,96,.5)',
+  ];
+
+  if(sessionStorage.getItem('bf-pw-ok')){
+    gate.remove(); return;
+  }
+
+  let wrongAttempts = 0;
+  document.body.style.overflow = 'hidden';
+
+  // focus hidden input — tap anywhere on gate also refocuses
+  setTimeout(()=> input.focus(), 100);
+  gate.addEventListener('click', ()=> input.focus());
+
+  function updateCells(typed){
+    cells.forEach((c,i)=>{
+      c.className = 'pw-cell';
+      if(i < typed.length){
+        c.classList.add('filled-'+i);
+        c.textContent = '●';
+      } else {
+        c.textContent = '';
+        if(i === typed.length) c.classList.add('active');
+      }
+    });
+  }
+
+  function triggerGlow(idx){
+    glow.style.background = `radial-gradient(circle, ${COLORS[idx]} 0%, transparent 70%)`;
+    glow.classList.remove('burst');
+    void glow.offsetWidth;
+    glow.classList.add('burst');
+  }
+
+  let lastLen = 0;
+  input.addEventListener('input', ()=>{
+    const raw   = input.value.toLowerCase().slice(0, PW.length);
+    input.value = raw;
+    const typed = raw;
+
+    // fire glow for newly added character
+    if(typed.length > lastLen){
+      triggerGlow(typed.length - 1);
+    }
+    lastLen = typed.length;
+    updateCells(typed);
+
+    if(typed.length === PW.length){
+      setTimeout(()=>{
+        if(typed === PW){
+          sessionStorage.setItem('bf-pw-ok','1');
+          gate.classList.add('fade-out');
+          document.body.style.overflow = '';
+          setTimeout(()=> gate.remove(), 900);
+        } else {
+          wrongAttempts++;
+          if(wrongAttempts >= 3){
+            // 3 strikes — Cooper time
+            errEl.textContent = '// WRONG. MEET COOPER.';
+            errEl.classList.add('show');
+            cells.forEach(c=> c.classList.add('error'));
+            setTimeout(()=>{
+              gate.classList.add('fade-out');
+              document.body.style.overflow = '';
+              // reveal site content so canvas exists
+              [document.getElementById('intro-overlay'),
+               document.getElementById('intro-beacon'),
+               document.getElementById('intro-amora'),
+               document.getElementById('intro-soft')
+              ].forEach(el=>{ if(el) el.remove(); });
+              document.body.classList.add('content-visible');
+              setTimeout(()=>{
+                gate.remove();
+                if(typeof openCooper === 'function') openCooper();
+              }, 900);
+            }, 900);
+          } else {
+            errEl.textContent = wrongAttempts === 2 ? '// LAST CHANCE' : '// ACCESS DENIED';
+            errEl.classList.add('show');
+            cells.forEach(c=> c.classList.add('error'));
+            setTimeout(()=>{
+              input.value = ''; lastLen = 0;
+              errEl.classList.remove('show');
+              errEl.textContent = '// ACCESS DENIED';
+              updateCells('');
+              input.focus();
+            }, 800);
+          }
+        }
+      }, 180);
+    }
+  });
+
+  updateCells('');
+})();
+
 // ── INTRO ANIMATION — first visit only ──
 const overlay  = document.getElementById('intro-overlay');
 const iBeacon  = document.getElementById('intro-beacon');
