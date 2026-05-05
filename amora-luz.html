@@ -645,6 +645,19 @@ body::before {
   .f-links { flex-wrap:wrap; justify-content:center; }
 }
 </style>
+<script>
+(function(){
+  const pw = sessionStorage.getItem('bf-collection-auth');
+  if(pw !== 'btwnforms2025'){
+    const entered = prompt('This collection is password protected.\n\nEnter password:');
+    if(entered !== 'btwnforms2025'){
+      document.location.href = 'index.html';
+    } else {
+      sessionStorage.setItem('bf-collection-auth','btwnforms2025');
+    }
+  }
+})();
+</script>
 </head>
 <body>
 

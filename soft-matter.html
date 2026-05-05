@@ -621,6 +621,19 @@ body::after {
   .float-img { width:clamp(90px,22vw,130px); height:clamp(120px,28vw,170px); }
 }
 </style>
+<script>
+(function(){
+  const pw = sessionStorage.getItem('bf-collection-auth');
+  if(pw !== 'btwnforms2025'){
+    const entered = prompt('This collection is password protected.\n\nEnter password:');
+    if(entered !== 'btwnforms2025'){
+      document.location.href = 'index.html';
+    } else {
+      sessionStorage.setItem('bf-collection-auth','btwnforms2025');
+    }
+  }
+})();
+</script>
 </head>
 <body>
 
